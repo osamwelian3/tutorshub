@@ -1,0 +1,53 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+logs/error.log
+public/uploads/passportsmall.jpg
+public/uploads/user_41.jpeg
+public/uploads/user_42.jpeg
+public/uploads/user_43.jpg
+public/uploads/user_44.jpg
+public/uploads/user_46.jpeg
+public/uploads/user_53.jpg
+public/uploads/user_54.jpg
+public/uploads/user_55.jpg
+package-lock.json
+pnpm-lock.yaml
