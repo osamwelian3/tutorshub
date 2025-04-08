@@ -17,7 +17,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/uploads/:path*',
-        destination: `http://localhost:4000/uploads/:path*`, // Proxy to the custom server
+        destination: `http://ec2-13-61-162-248.eu-north-1.compute.amazonaws.com:4000/uploads/:path*`, // Proxy to the custom server
       },
     ];
   },
