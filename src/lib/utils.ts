@@ -21,3 +21,7 @@ export async function comparePassword(password: string, hash: string) {
 export function capitalize(string: string) {
   return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
 }
+
+export function convertTZ(date: Date | string, tzString: string) {
+  return new Date((typeof date === "string" ? new Date(date) : date).toLocaleString("en-US", {timeZone: tzString}));   
+}

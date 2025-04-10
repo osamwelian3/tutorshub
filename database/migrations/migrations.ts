@@ -13,6 +13,7 @@ export default [
             { name: "dob", type: "DATE NOT NULL" },
             { name: "avator", type: "VARCHAR(100) NULL", defaultValue: null },
             { name: "password", type: "VARCHAR(255) NOT NULL" },
+            { name: "last_login", type: "DATETIME on update CURRENT_TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP" },
             { name: "created_at", type: "DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP" },
             { name: "updated_at", type: "DATETIME on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP" }
         ],

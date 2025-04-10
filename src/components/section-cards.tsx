@@ -14,9 +14,13 @@ import { Skeleton } from "./ui/skeleton"
 export function SectionCards() {
   const user = useAppSelector(state => state.user.user)
   const users = useAppSelector(state => state.user.users)
-  if (!user) {
+  if (!user || !users) {
     return <Skeleton />
   }
+  const previousUsers = users.map((user) => user.created_at > new Date(new Date().setMonth(new Date().getMonth()-6)) && user.created_at < new Date(new Date().setMonth(new Date().getMonth()-3))).length
+  console.log(previousUsers)
+  console.log(users.length)
+  const growthPercentage = ((users.length - previousUsers) / previousUsers )*100
   return (
     <div className="*:data-[slot=card]:shadow-xs @xl/main:grid-cols-2 @5xl/main:grid-cols-4 grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card lg:px-6">
       <Card className="@container/card">
@@ -49,18 +53,28 @@ export function SectionCards() {
           </CardTitle>
           <div className="absolute right-4 top-4">
             <Badge variant="outline" className="flex gap-1 rounded-lg text-xs">
-              <TrendingDownIcon className="size-3" />
-              {users?.map((user) => user.created_at > new Date(new Date().setMonth(new Date().getMonth()-3))).length / }
+              {growthPercentage >= 0 ? <TrendingUpIcon className="size-3" /> : <TrendingDownIcon className="size-3" />}
+              <span>{growthPercentage}%</span>
             </Badge>
           </div>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1 text-sm">
-          <div className="line-clamp-1 flex gap-2 font-medium">
-            Down 20% this period <TrendingDownIcon className="size-4" />
-          </div>
-          <div className="text-muted-foreground">
-            Acquisition needs attention
-          </div>
+          { growthPercentage >= 0 ?
+          <>
+            <div className="line-clamp-1 flex gap-2 font-medium">
+              Up {growthPercentage}% this period <TrendingUpIcon className="size-4" />
+            </div>
+          </>
+            :
+            <>
+              <div className="line-clamp-1 flex gap-2 font-medium">
+                Down {growthPercentage}% this period <TrendingDownIcon className="size-4" />
+              </div>
+              <div className="text-muted-foreground">
+                Acquisition needs attention
+              </div>
+            </>
+          }
         </CardFooter>
       </Card>
       <Card className="@container/card">
