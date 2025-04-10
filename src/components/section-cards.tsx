@@ -8,20 +8,27 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { useAppSelector } from "@/app/store/store"
+import { Skeleton } from "./ui/skeleton"
 
 export function SectionCards() {
+  const user = useAppSelector(state => state.user.user)
+  const users = useAppSelector(state => state.user.users)
+  if (!user) {
+    return <Skeleton />
+  }
   return (
     <div className="*:data-[slot=card]:shadow-xs @xl/main:grid-cols-2 @5xl/main:grid-cols-4 grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card lg:px-6">
       <Card className="@container/card">
         <CardHeader className="relative">
           <CardDescription>Total Revenue</CardDescription>
           <CardTitle className="@[250px]/card:text-3xl text-2xl font-semibold tabular-nums">
-            $1,250.00
+            $0.00
           </CardTitle>
           <div className="absolute right-4 top-4">
             <Badge variant="outline" className="flex gap-1 rounded-lg text-xs">
               <TrendingUpIcon className="size-3" />
-              +12.5%
+              0%
             </Badge>
           </div>
         </CardHeader>
@@ -38,12 +45,12 @@ export function SectionCards() {
         <CardHeader className="relative">
           <CardDescription>New Customers</CardDescription>
           <CardTitle className="@[250px]/card:text-3xl text-2xl font-semibold tabular-nums">
-            1,234
+            {users?.map((user) => user.created_at > new Date(new Date().setMonth(new Date().getMonth()-3))).length}
           </CardTitle>
           <div className="absolute right-4 top-4">
             <Badge variant="outline" className="flex gap-1 rounded-lg text-xs">
               <TrendingDownIcon className="size-3" />
-              -20%
+              {users?.map((user) => user.created_at > new Date(new Date().setMonth(new Date().getMonth()-3))).length / }
             </Badge>
           </div>
         </CardHeader>

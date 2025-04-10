@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
         const data = await req.json()
         console.log(data)
         const db = await pool.getConnection()
-        const queryUser = `SELECT id, email, first_name, middle_name, last_name, home_address, phone_number, dob, avator, password FROM users WHERE email = '${data.email}' LIMIT 1`
+        const queryUser = `SELECT id, email, first_name, middle_name, last_name, home_address, phone_number, dob, role, avator, password FROM users WHERE email = '${data.email}' LIMIT 1`
         const [rows2] = await db.execute(queryUser);
         db.release()
 
@@ -67,7 +67,7 @@ export async function GET(req: NextRequest) {
             const db = await pool.getConnection()
             const deleteQuery = 'DELETE FROM sessions WHERE sessions.updated_at < DATE_SUB(NOW(), INTERVAL 1 DAY)'
             await db.execute(deleteQuery);
-            const userQuery = `SELECT users.id, users.first_name, users.middle_name, users.last_name, users.email, users.home_address, users.phone_number, users.dob, users.avator FROM sessions JOIN users ON sessions.user_id = users.id WHERE sessions.session_key = ?`
+            const userQuery = `SELECT users.id, users.first_name, users.middle_name, users.last_name, users.email, users.home_address, users.phone_number, users.dob, users.avator, users.role FROM sessions JOIN users ON sessions.user_id = users.id WHERE sessions.session_key = ?`
             const [rows] = await db.execute(userQuery, [session_key])
             db.release()
             

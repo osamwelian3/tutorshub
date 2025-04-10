@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
+import { Area, AreaChart, CartesianGrid, Line, LineChart, XAxis } from "recharts"
 
 import { useIsMobile } from "@/hooks/use-mobile"
 import {
@@ -214,7 +214,7 @@ export function ChartAreaInteractive() {
           config={chartConfig}
           className="aspect-auto h-[250px] w-full"
         >
-          <AreaChart data={filteredData}>
+          <LineChart data={filteredData}>
             <defs>
               <linearGradient id="fillDesktop" x1="0" y1="0" x2="0" y2="1">
                 <stop
@@ -228,7 +228,7 @@ export function ChartAreaInteractive() {
                   stopOpacity={0.1}
                 />
               </linearGradient>
-              <linearGradient id="fillMobile" x1="0" y1="0" x2="0" y2="1">
+              <linearGradient id="fillMobile" x1="0" y1="0" x2="1" y2="1">
                 <stop
                   offset="5%"
                   stopColor="var(--color-mobile)"
@@ -266,16 +266,17 @@ export function ChartAreaInteractive() {
                       day: "numeric",
                     })
                   }}
-                  indicator="dot"
+                  // indicator="dot"
                 />
               }
             />
-            <Area
+            <Line
               dataKey="mobile"
               type="natural"
+              dot={false}
               fill="url(#fillMobile)"
-              stroke="var(--color-mobile)"
-              stackId="a"
+              stroke="black"// "var(--color-mobile)"
+              // stackId="a"
             />
             <Area
               dataKey="desktop"
@@ -284,7 +285,7 @@ export function ChartAreaInteractive() {
               stroke="var(--color-desktop)"
               stackId="a"
             />
-          </AreaChart>
+          </LineChart>
         </ChartContainer>
       </CardContent>
     </Card>

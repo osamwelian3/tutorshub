@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 // import { Geist, Geist_Mono } from "next/font/google";
-import "../globals.css";
+import "../../globals.css";
 import { AppSidebar } from "@/components/app-sidebar"
 import {
   Breadcrumb,
@@ -17,7 +17,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar"
 import { Toaster } from "sonner";
-import Providers from "../providers";
+import Providers from "@/app/providers";
 import ClientComponent from "@/components/client-component";
 
 // const geistSans = Geist({
@@ -33,7 +33,7 @@ import ClientComponent from "@/components/client-component";
 // });
 
 export const metadata: Metadata = {
-  title: "TutorsHub::Dashboard",
+  title: "MyTusyen::Dashboard",
   description: "Your go to place for the best tutoring services.",
 };
 

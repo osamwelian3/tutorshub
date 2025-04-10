@@ -18,7 +18,7 @@ import ClientComponent from "@/components/client-component";
 // });
 
 export const metadata: Metadata = {
-  title: "TutorsHub",
+  title: "MyTusyen",
   description: "Your go to place for the best tutoring services.",
 };
 

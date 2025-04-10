@@ -128,7 +128,7 @@ export function StudentRegisterForm({
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values)
-    const data = {...values, avator: undefined}
+    const data = {...values, avator: undefined, role: 'student'}
     delete data.avator
     // console.log(data)
     await fetch('/api/users', {

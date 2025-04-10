@@ -106,15 +106,29 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
+import { User } from "@/app/store/features/userSlice"
+import { useAppSelector } from "@/app/store/store"
 
 export const schema = z.object({
   id: z.number(),
-  header: z.string(),
-  type: z.string(),
+  name: z.string(),
+  class: z.string(),
   status: z.string(),
-  target: z.string(),
-  limit: z.string(),
-  reviewer: z.string(),
+  score: z.number(),
+  grade: z.string(),
+  tutor: z.string(),
+  user: z.object({
+    id: z.number(),
+    first_name: z.string(),
+    middle_name: z.string(),
+    last_name: z.string(),
+    email: z.string(),
+    home_address: z.string(),
+    phone_number: z.string(),
+    dob: z.date(),
+    role: z.string(),
+    avator: z.string().optional()
+  }),
 })
 
 // Create a separate component for the drag handle
@@ -170,20 +184,20 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "header",
-    header: "Header",
+    accessorKey: "name",
+    header: "Course Name",
     cell: ({ row }) => {
       return <TableCellViewer item={row.original} />
     },
     enableHiding: false,
   },
   {
-    accessorKey: "type",
-    header: "Section Type",
+    accessorKey: "class",
+    header: "Class/Category",
     cell: ({ row }) => (
       <div className="w-32">
         <Badge variant="outline" className="px-1.5 text-muted-foreground">
-          {row.original.type}
+          {row.original.class}
         </Badge>
       </div>
     ),
@@ -206,69 +220,71 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     ),
   },
   {
-    accessorKey: "target",
-    header: () => <div className="w-full text-right">Target</div>,
+    accessorKey: "score",
+    header: () => <div className="w-full text-left">Score</div>,
     cell: ({ row }) => (
       <form
         onSubmit={(e) => {
           e.preventDefault()
           toast.promise(new Promise((resolve) => setTimeout(resolve, 1000)), {
-            loading: `Saving ${row.original.header}`,
+            loading: `Saving ${row.original.name}`,
             success: "Done",
             error: "Error",
           })
         }}
       >
-        <Label htmlFor={`${row.original.id}-target`} className="sr-only">
-          Target
+        <Label htmlFor={`${row.original.id}-score`} className="sr-only">
+          Score
         </Label>
         <Input
+          disabled={row.original.user.role === 'student'}
           className="h-8 w-16 border-transparent bg-transparent text-right shadow-none hover:bg-input/30 focus-visible:border focus-visible:bg-background"
-          defaultValue={row.original.target}
-          id={`${row.original.id}-target`}
+          defaultValue={row.original.score}
+          id={`${row.original.id}-score`}
         />
       </form>
     ),
   },
   {
-    accessorKey: "limit",
-    header: () => <div className="w-full text-right">Limit</div>,
+    accessorKey: "grade",
+    header: () => <div className="w-full text-left">Grade</div>,
     cell: ({ row }) => (
       <form
         onSubmit={(e) => {
           e.preventDefault()
           toast.promise(new Promise((resolve) => setTimeout(resolve, 1000)), {
-            loading: `Saving ${row.original.header}`,
+            loading: `Saving ${row.original.name}`,
             success: "Done",
             error: "Error",
           })
         }}
       >
-        <Label htmlFor={`${row.original.id}-limit`} className="sr-only">
-          Limit
+        <Label htmlFor={`${row.original.id}-grade`} className="sr-only">
+          Grade
         </Label>
         <Input
-          className="h-8 w-16 border-transparent bg-transparent text-right shadow-none hover:bg-input/30 focus-visible:border focus-visible:bg-background"
-          defaultValue={row.original.limit}
-          id={`${row.original.id}-limit`}
+          disabled={row.original.user.role === 'student'}
+          className="h-8 w-32 border-transparent bg-transparent text-left shadow-none hover:bg-input/30 focus-visible:border focus-visible:bg-background"
+          defaultValue={row.original.grade}
+          id={`${row.original.id}-grade`}
         />
       </form>
     ),
   },
   {
-    accessorKey: "reviewer",
-    header: "Reviewer",
+    accessorKey: "tutor",
+    header: "Tutor",
     cell: ({ row }) => {
-      const isAssigned = row.original.reviewer !== "Assign reviewer"
+      const isAssigned = row.original.tutor !== "Assign Tutor"
 
       if (isAssigned) {
-        return row.original.reviewer
+        return row.original.tutor
       }
 
       return (
         <>
-          <Label htmlFor={`${row.original.id}-reviewer`} className="sr-only">
-            Reviewer
+          <Label htmlFor={`${row.original.id}-tutor`} className="sr-only">
+            Tutor
           </Label>
           <Select>
             <SelectTrigger
@@ -421,15 +437,15 @@ export function DataTable({
             <SelectValue placeholder="Select a view" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="outline">Outline</SelectItem>
-            <SelectItem value="past-performance">Past Performance</SelectItem>
+            <SelectItem value="outline">Grades</SelectItem>
+            {/* <SelectItem value="past-performance">Past Performance</SelectItem>
             <SelectItem value="key-personnel">Key Personnel</SelectItem>
-            <SelectItem value="focus-documents">Focus Documents</SelectItem>
+            <SelectItem value="focus-documents">Focus Documents</SelectItem> */}
           </SelectContent>
         </Select>
         <TabsList className="@4xl/main:flex hidden">
-          <TabsTrigger value="outline">Outline</TabsTrigger>
-          <TabsTrigger value="past-performance" className="gap-1">
+          <TabsTrigger value="outline">Grades</TabsTrigger>
+          {/* <TabsTrigger value="past-performance" className="gap-1">
             Past Performance{" "}
             <Badge
               variant="secondary"
@@ -447,7 +463,7 @@ export function DataTable({
               2
             </Badge>
           </TabsTrigger>
-          <TabsTrigger value="focus-documents">Focus Documents</TabsTrigger>
+          <TabsTrigger value="focus-documents">Focus Documents</TabsTrigger> */}
         </TabsList>
         <div className="flex items-center gap-2">
           <DropdownMenu>
@@ -483,10 +499,10 @@ export function DataTable({
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button variant="outline" size="sm">
+          {/* <Button variant="outline" size="sm">
             <PlusIcon />
             <span className="hidden lg:inline">Add Section</span>
-          </Button>
+          </Button> */}
         </div>
       </div>
       <TabsContent
@@ -642,12 +658,17 @@ export function DataTable({
 }
 
 const chartData = [
-  { month: "January", desktop: 186, mobile: 80 },
-  { month: "February", desktop: 305, mobile: 200 },
-  { month: "March", desktop: 237, mobile: 120 },
-  { month: "April", desktop: 73, mobile: 190 },
-  { month: "May", desktop: 209, mobile: 130 },
-  { month: "June", desktop: 214, mobile: 140 },
+  { assesment: "1", score: 22.5 },
+  { assesment: "1", score: 29 },
+  { assesment: "1", score: 22.5 },
+  { assesment: "1", score: 36.8 },
+  { assesment: "1", score: 50.5 },
+  // { month: "January", desktop: 186, mobile: 80 },
+  // { month: "February", desktop: 305, mobile: 200 },
+  // { month: "March", desktop: 237, mobile: 120 },
+  // { month: "April", desktop: 73, mobile: 190 },
+  // { month: "May", desktop: 209, mobile: 130 },
+  // { month: "June", desktop: 214, mobile: 140 },
 ]
 
 const chartConfig = {
@@ -655,27 +676,28 @@ const chartConfig = {
     label: "Desktop",
     color: "var(--primary)",
   },
-  mobile: {
-    label: "Mobile",
-    color: "var(--primary)",
-  },
+  // mobile: {
+  //   label: "Mobile",
+  //   color: "var(--primary)",
+  // },
 } satisfies ChartConfig
 
 function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
+  const user = useAppSelector(state => state.user.user)
   const isMobile = useIsMobile()
 
   return (
     <Sheet>
       <SheetTrigger asChild>
         <Button variant="link" className="w-fit px-0 text-left text-foreground">
-          {item.header}
+          {item.name}
         </Button>
       </SheetTrigger>
       <SheetContent side="right" className="flex flex-col">
         <SheetHeader className="gap-1">
-          <SheetTitle>{item.header}</SheetTitle>
+          <SheetTitle>{item.name}</SheetTitle>
           <SheetDescription>
-            Showing total visitors for the last 6 months
+            Showing chart progress for scores in {item.name}
           </SheetDescription>
         </SheetHeader>
         <div className="flex flex-1 flex-col gap-4 overflow-y-auto py-4 text-sm">
@@ -692,7 +714,7 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
                 >
                   <CartesianGrid vertical={false} />
                   <XAxis
-                    dataKey="month"
+                    dataKey="assesment"
                     tickLine={false}
                     axisLine={false}
                     tickMargin={8}
@@ -704,7 +726,7 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
                     content={<ChartTooltipContent indicator="dot" />}
                   />
                   <Area
-                    dataKey="mobile"
+                    dataKey="score"
                     type="natural"
                     fill="var(--color-mobile)"
                     fillOpacity={0.6}
@@ -728,9 +750,7 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
                   <TrendingUpIcon className="size-4" />
                 </div>
                 <div className="text-muted-foreground">
-                  Showing total visitors for the last 6 months. This is just
-                  some random text to test the layout. It spans multiple lines
-                  and should wrap around.
+                  Tutors remarks.
                 </div>
               </div>
               <Separator />
@@ -738,39 +758,39 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
           )}
           <form className="flex flex-col gap-4">
             <div className="flex flex-col gap-3">
-              <Label htmlFor="header">Header</Label>
-              <Input id="header" defaultValue={item.header} />
+              <Label htmlFor="header">Course Name</Label>
+              <Input id="header" disabled defaultValue={item.name} />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-3">
-                <Label htmlFor="type">Type</Label>
-                <Select defaultValue={item.type}>
-                  <SelectTrigger id="type" className="w-full">
+                <Label htmlFor="class">Class</Label>
+                <Select disabled defaultValue={item.class}>
+                  <SelectTrigger id="class" className="w-full">
                     <SelectValue placeholder="Select a type" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="Table of Contents">
-                      Table of Contents
+                      Engineering
                     </SelectItem>
-                    <SelectItem value="Executive Summary">
-                      Executive Summary
+                    <SelectItem value="Sciences">
+                      Sciences
                     </SelectItem>
                     <SelectItem value="Technical Approach">
-                      Technical Approach
+                      Technical
                     </SelectItem>
                     <SelectItem value="Design">Design</SelectItem>
                     <SelectItem value="Capabilities">Capabilities</SelectItem>
                     <SelectItem value="Focus Documents">
-                      Focus Documents
+                      Environmental Studies
                     </SelectItem>
                     <SelectItem value="Narrative">Narrative</SelectItem>
-                    <SelectItem value="Cover Page">Cover Page</SelectItem>
+                    <SelectItem value="Cover Page">Literature</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div className="flex flex-col gap-3">
                 <Label htmlFor="status">Status</Label>
-                <Select defaultValue={item.status}>
+                <Select disabled defaultValue={item.status}>
                   <SelectTrigger id="status" className="w-full">
                     <SelectValue placeholder="Select a status" />
                   </SelectTrigger>
@@ -784,39 +804,41 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-3">
-                <Label htmlFor="target">Target</Label>
-                <Input id="target" defaultValue={item.target} />
+                <Label htmlFor="score">Score</Label>
+                <Input id="score" disabled defaultValue={item.score} />
               </div>
               <div className="flex flex-col gap-3">
-                <Label htmlFor="limit">Limit</Label>
-                <Input id="limit" defaultValue={item.limit} />
+                <Label htmlFor="grade">Grade</Label>
+                <Input id="grade" disabled defaultValue={item.grade} />
               </div>
             </div>
             <div className="flex flex-col gap-3">
-              <Label htmlFor="reviewer">Reviewer</Label>
-              <Select defaultValue={item.reviewer}>
-                <SelectTrigger id="reviewer" className="w-full">
-                  <SelectValue placeholder="Select a reviewer" />
+              <Label htmlFor="tutor">Tutor</Label>
+              <Select disabled defaultValue={item.tutor}>
+                <SelectTrigger id="tutor" className="w-full">
+                  <SelectValue placeholder="Select a tutor" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="Eddie Lake">Eddie Lake</SelectItem>
                   <SelectItem value="Jamik Tashpulatov">
                     Jamik Tashpulatov
                   </SelectItem>
-                  <SelectItem value="Emily Whalen">Emily Whalen</SelectItem>
+                  <SelectItem value="John Doe">John Doe</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </form>
         </div>
-        <SheetFooter className="mt-auto flex gap-2 sm:flex-col sm:space-x-0">
-          <Button className="w-full">Submit</Button>
-          <SheetClose asChild>
-            <Button variant="outline" className="w-full">
-              Done
-            </Button>
-          </SheetClose>
-        </SheetFooter>
+        { user?.role === 'tutor' || user?.role === 'admin' ?
+          <SheetFooter className="mt-auto flex gap-2 sm:flex-col sm:space-x-0">
+            <Button className="w-full">Submit</Button>
+            <SheetClose asChild>
+              <Button variant="outline" className="w-full">
+                Done
+              </Button>
+            </SheetClose>
+          </SheetFooter> : null
+        }
       </SheetContent>
     </Sheet>
   )

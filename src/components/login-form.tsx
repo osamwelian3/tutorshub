@@ -73,8 +73,19 @@ export function LoginForm({
     }).then((res) => res.json())
     .then((res) => {
       if (res.success) {
-        dispatch(setUser(res.user as User))
-        router.push('/dashboard')
+        const user = res.user as User
+        dispatch(setUser(user))
+        if (user.role === 'student') {
+          router.push('/students/dashboard')
+        } else if (user.role === 'tutor') {
+          router.push('/tutors/dashboard')
+        } else if (user.role === 'admin') {
+          router.push('/admins/dashboard')
+        } else if (user.role === 'parent') {
+          router.push('/parents/dashboard')
+        } else {
+          router.push('/')
+        }
         toast("Authentication success...", {
           style: {color: 'green'},
           icon: <Check />

@@ -3,17 +3,21 @@ import { NextRequest, NextResponse } from "next/server";
 import path from "path";
 import fs from "fs";
 import { hashPassword } from "@/lib/utils";
+import { User } from "@/app/store/features/userSlice";
 
 const UPLOAD_DIR = path.resolve(__dirname, "../../../../../logs").replace("[project]/", "");
 
 export async function GET() {
     try {
         const db = await pool.getConnection()
-        const query = 'select * from users'
+        const query = 'SELECT `id`, `email`, `first_name`, `middle_name`, `last_name`, `home_address`, `phone_number`, `dob`, `avator`, `role`, `created_at`, `updated_at`  FROM `users` WHERE 1'
         const [rows] = await db.execute(query)
         db.release()
         
-        return NextResponse.json(rows)
+        return NextResponse.json({
+            success: true,
+            data: (rows as Array<User>)
+        })
     } catch (error) {
         if (!fs.existsSync(UPLOAD_DIR)) {
             fs.mkdirSync(UPLOAD_DIR);
@@ -38,7 +42,8 @@ type Data = {
     home_address: string,
     dob: string,
     password: string,
-    confirm_password: string
+    confirm_password: string,
+    role: 'student' | 'tutor' | 'parent' | 'admin' | 'guest'
   }
 
 export async function POST(req: NextRequest) {
@@ -46,7 +51,7 @@ export async function POST(req: NextRequest) {
         const data: Data = await req.json()
         console.log(data)
         const db = await pool.getConnection()
-        const query = `INSERT INTO users (email, first_name, middle_name, last_name, home_address, phone_number, dob, avator, password) VALUES ('${data.email}', '${data.first_name}', '${data.middle_name}', '${data.last_name}', '${data.home_address}', '${data.phone_number}', '${new Date(data.dob).toISOString().slice(0,19).replace("T", " ").replace(/'/g, "''")}', NULL, '${await hashPassword(data.password)}')`
+        const query = `INSERT INTO users (email, first_name, middle_name, last_name, home_address, phone_number, dob, avator, role, password) VALUES ('${data.email}', '${data.first_name}', '${data.middle_name}', '${data.last_name}', '${data.home_address}', '${data.phone_number}', '${new Date(data.dob).toISOString().slice(0,19).replace("T", " ").replace(/'/g, "''")}', NULL, '${data.role}', '${await hashPassword(data.password)}')`
         const queryUser = `SELECT id, email, first_name, middle_name, last_name, home_address, phone_number, dob, avator FROM users WHERE email = '${data.email}' LIMIT 1`
         const [rows] = await db.execute(query);
         const [rows2] = await db.execute(queryUser);

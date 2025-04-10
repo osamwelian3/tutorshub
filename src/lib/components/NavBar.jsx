@@ -27,16 +27,33 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { BadgeCheck, Bell, ChevronsUpDown, CreditCard, LayoutDashboard, LogOut, Sparkles } from "lucide-react"
 import { logout } from "@/app/store/features/userSlice"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
 
 export default function NavBar() {
+  const router = useRouter()
   const dispatch = useAppDispatch()
   const user = useAppSelector(state => state.user.user)
+
+  const handleDashboardNav = () => {
+    if (user.role === 'student') {
+      router.push('/students/dashboard')
+    } else if (user.role === 'tutor') {
+      router.push('/tutors/dashboard')
+    } else if (user.role === 'admin') {
+      router.push('/admins/dashboard')
+    } else if (user.role === 'parent') {
+      router.push('/parents/dashboard')
+    } else {
+      router.push('/')
+    }
+  }
+
   return (
-    <div className="flex items-center justify-between px-4 py-2 bg-white dark:bg-gray-800 sticky top-0 z-[9999]">
+    <div className="flex items-center justify-between px-4 py-2 bg-white dark:bg-gray-800 sticky top-0 z-[2]">
       <Link href="#" className="flex items-center gap-2" prefetch={false}>
         {/* <MountainIcon className="h-6 w-6" /> */}
         {/* <h1 className="text-lg font-semibold">Tutors<b>Hub</b></h1> */}
-        <Image src={'/tutorshub.jpeg'} width={100} height={40} />
+        <Image src={'/mytusyen.png'} width={100} height={40} />
       </Link>
       <div className="hidden lg:flex gap-4">
         <NavMenu />
@@ -78,7 +95,7 @@ export default function NavBar() {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem asChild>
-                <Link href={'/dashboard'} prefetch={true}>
+                <Link href={`${user.role}s/dashboard`} onClick={handleDashboardNav} prefetch={true}>
                   <LayoutDashboard />
                   Dashboard
                 </Link>

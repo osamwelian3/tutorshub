@@ -44,7 +44,7 @@ interface Footer7Props {
 const Footer7 = ({
   logo = {
     url: "/",
-    src: "/tutorshub.jpeg",
+    src: "/mytusyen.png",
     alt: "logo",
     title: "Tutorshub",
   },
@@ -67,8 +67,7 @@ const Footer7 = ({
                     alt={logo.alt}
                     title={logo.title}
                     width={100}
-                    height={50}
-                    className="h-8"
+                    height={80}
                   />
                 </Link>
                 {/* <h2 className="text-xl font-semibold">{logo.title}</h2> */}
